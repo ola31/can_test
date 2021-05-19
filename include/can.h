@@ -13,11 +13,12 @@
 #include <linux/can/raw.h>
 //#include <unistd.h>
 
+typedef unsigned char  BYTE;
 
-extern int open_port(const char *port);
-extern int send_port(struct can_frame *frame);
-extern void read_port();
-extern int close_port();
+int open_port(const char *port);
+int send_port(struct can_frame *frame);
+void read_port();
+int close_port();
 
 
 #endif // CAN_OLA_H

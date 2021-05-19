@@ -3,7 +3,6 @@
 int soc;
 int read_can_port;
 
-
 int open_port(const char *port)
 {
     struct ifreq ifr;
