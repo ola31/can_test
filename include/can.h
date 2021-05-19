@@ -11,14 +11,24 @@
 #include <net/if.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
-//#include <unistd.h>
+#include <unistd.h>
 
-typedef unsigned char  BYTE;
+
+#define PID_REQ_PID_DATA 4
+
+typedef unsigned char  BYTE;  //8bit
+typedef unsigned short BYTE2; //16bit
+typedef unsigned int BYTE4;   //32bit
 
 int open_port(const char *port);
 int send_port(struct can_frame *frame);
 void read_port();
 int close_port();
+
+void CAN_initalize(void);
+void CAN_write(BYTE data_array[]);
+void CAN_REQ(BYTE R_PID,BYTE Recieve_arr[]);
+int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
 
 
 #endif // CAN_OLA_H
