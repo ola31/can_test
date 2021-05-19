@@ -1,5 +1,3 @@
-//#include "ros/ros.h"
-//#include "std_msgs/String.h"
 #include "can_test_node.h"
 
 

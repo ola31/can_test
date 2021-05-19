@@ -1,4 +1,4 @@
-#include "can_ola.h"
+#include "can.h"
 
 int soc;
 int read_can_port;
