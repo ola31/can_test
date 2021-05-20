@@ -25,7 +25,7 @@ void send_RPM(short R_RPM, short L_RPM){
 }
 
 
-void read_Encoder(int &left_value, int &right_value){
+void read_Encoder(int *left_value, int *right_value){
 
   int r_enc,l_enc;
   BYTE *read_arr=nullptr;
@@ -36,8 +36,8 @@ void read_Encoder(int &left_value, int &right_value){
   CAN_REQ(PID_MONITOR2,read_arr);  //왼쪽모터 = 1번모터일경우
   l_enc = Byte2Int32(read_arr[4],read_arr[5],read_arr[6],read_arr[7]);
 
-  left_value = l_enc;
-  right_value = r_enc;
+  *left_value = l_enc;
+  *right_value = r_enc;
 
 }
 

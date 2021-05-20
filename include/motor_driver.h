@@ -20,7 +20,7 @@
 
 
 void send_RPM(short R_RPM, short L_RPM);
-void read_Encoder(int &left_value, int &right_value);
+void read_Encoder(int *left_value, int *right_value);
 void Torque_OFF(void);
 void contol_vel(float *cmd_vel);
 

@@ -18,6 +18,10 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
+    int l_posi,r_posi;
+
+    read_Encoder(&l_posi, &r_posi);
+    ROS_INFO("Left Tick : %d, Right_Tick : %d",l_posi,r_posi);
     std_msgs::String msg;
     msg.data = "hello world";
 
