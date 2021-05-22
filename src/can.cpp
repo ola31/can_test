@@ -107,6 +107,7 @@ void CAN_write(BYTE data_array[]){
 
   struct can_frame frame;
   frame.can_id = 0xB7AC01 ;        //32bit
+  frame.can_id |= CAN_EFF_FLAG;
   frame.can_dlc=8;                 //8bit
   memcpy(frame.data,data_array,8);  //copy data_array->frame
 
@@ -126,14 +127,22 @@ void CAN_REQ(BYTE R_PID){
 
 }
 
-void CAN_read(void){
+struct CAN_data CAN_read(void){
 
   struct can_frame frame_rd;
-  read(soc, &frame_rd, sizeof(struct can_frame));
-  int i=0;
-  for(i=0;i<7;i++){
-    ROS_INFO("data(%d) = %d",i,frame_rd.data[i]);
+  struct CAN_data can_data;
+  int result = read(soc, &frame_rd, sizeof(struct can_frame));
+  if(result<1){
+      ROS_WARN("CAN_read_failed");
+      //return;
   }
+
+  can_data.pid=frame_rd.data[0];
+  int i;
+  for(i=1;i<8;i++){
+    can_data.data[i]=frame_rd.data[i];
+  }
+  return can_data; 
 
 }
 

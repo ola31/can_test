@@ -18,10 +18,18 @@
 #define PID_MONITOR 196      //모터 1의 모니터데이터(위치정보:D4,5,6,7)
 #define PID_MONITOR2 201     //모터 2의 모니터데이터
 
+struct Encoder_data{
+  int R_posi;
+  int L_posi;
+};
+
 
 void send_RPM(short R_RPM, short L_RPM);
-void read_Encoder(int *left_value, int *right_value);
+struct Encoder_data read_Encoder(void);
+void Encoder_REQ(void);
 void Torque_OFF(void);
 void contol_vel(float *cmd_vel);
+void Reset_ENC(void);
+
 
 #endif // MOTOR_DRIVER_H

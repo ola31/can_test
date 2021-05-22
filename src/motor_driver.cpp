@@ -22,9 +22,10 @@ void send_RPM(short R_RPM, short L_RPM){
   RPM_vel_arr[6]=D6;
 
   CAN_write(RPM_vel_arr);
+  //ROS_INFO("CAN_wrtie");
 }
 
-
+/*
 void read_Encoder(int *left_value, int *right_value){
 
   int r_enc,l_enc;
@@ -41,10 +42,68 @@ void read_Encoder(int *left_value, int *right_value){
 
 }
 
+*/
+
+void Encoder_REQ(void){
+    CAN_REQ(PID_MONITOR);
+    CAN_REQ(PID_MONITOR2);
+}
+/*
+struct Encoder_data read_Encoder(void){
+  
+  struct Encoder_data enc_data;
+  
+  
+ // enc_data.R_posi=read_R_Encoder();
+//enc_data.L_posi=read_L_Encoder();
+  return enc_data;
+}*/
+
+struct Encoder_data read_Encoder(void){
+  
+  struct CAN_data can_data;
+  struct Encoder_data enc_data;
+  can_data = CAN_read();
+
+  if(can_data.pid == PID_MONITOR){
+  
+     enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+  }
+  else if(can_data.pid == PID_MONITOR2){
+  
+     enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+  }
+  else{
+    ROS_WARN("Read_Encoder_failed 1");
+    //return 0;
+  }
+
+  can_data = CAN_read();
+
+  if(can_data.pid == PID_MONITOR){
+     enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+  }
+  else if(can_data.pid == PID_MONITOR2){
+     enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+  }
+  else{
+    ROS_WARN("Read_Encoder_failed 2");
+    //return 0;
+  }
+  
+  return enc_data;
+   
+}
+
 void Torque_OFF(void){
   BYTE TQ_OFF[8]={5,0,0,0,0,0,0,0};  //자연정지 PID_TQ_OFF(5번) ,private??
   CAN_write(TQ_OFF);
   ROS_INFO("Motor_Torque_OFF");
+}
+
+void Reset_ENC(void){
+  BYTE reset[8] = {13,0,0,0,0,0,0,0};
+  CAN_write(reset);
 }
 
 

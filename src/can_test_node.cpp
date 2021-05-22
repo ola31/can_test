@@ -14,26 +14,29 @@ int main(int argc, char **argv)
   ros::Rate loop_rate(10);
 
   CAN_initalize();
-  send_RPM(200,200);
+  Reset_ENC();
 
-  CAN_REQ(PID_MONITOR);
+  send_RPM(100,100);
+  
+  struct Encoder_data enc_data;
+
+  Encoder_REQ();
   loop_rate.sleep();
+
   while (ros::ok())
   {
-    CAN_read();
-    /*int l_posi,r_posi;
+    enc_data = read_Encoder();
+        
+    ROS_INFO("R_posi : %d   L_posi : %d",enc_data.R_posi,enc_data.L_posi);
 
-    read_Encoder(&l_posi, &r_posi);
-    ROS_INFO("Left Tick : %d, Right_Tick : %d",l_posi,r_posi);
     std_msgs::String msg;
     msg.data = "hello world";
 
     chatter_pub.publish(msg);
 
     ros::spinOnce();
-    */
-    CAN_REQ(PID_MONITOR);
 
+    Encoder_REQ();
     loop_rate.sleep();
   }
 

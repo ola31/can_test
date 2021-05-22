@@ -20,6 +20,11 @@ typedef unsigned char  BYTE;  //8bit
 typedef unsigned short BYTE2; //16bit
 typedef unsigned int BYTE4;   //32bit
 
+struct CAN_data{
+BYTE pid;  
+BYTE data[7];
+};
+
 int open_port(const char *port);
 int send_port(struct can_frame *frame);
 void read_port();
@@ -28,7 +33,7 @@ int close_port();
 void CAN_initalize(void);
 void CAN_write(BYTE data_array[]);
 void CAN_REQ(BYTE R_PID);
-void CAN_read(void);
+struct CAN_data CAN_read(void);
 int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
 
 
