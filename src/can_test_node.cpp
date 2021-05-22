@@ -16,9 +16,12 @@ int main(int argc, char **argv)
   CAN_initalize();
   send_RPM(200,200);
 
+  CAN_REQ(PID_MONITOR);
+  loop_rate.sleep();
   while (ros::ok())
   {
-    int l_posi,r_posi;
+    CAN_read();
+    /*int l_posi,r_posi;
 
     read_Encoder(&l_posi, &r_posi);
     ROS_INFO("Left Tick : %d, Right_Tick : %d",l_posi,r_posi);
@@ -28,6 +31,8 @@ int main(int argc, char **argv)
     chatter_pub.publish(msg);
 
     ros::spinOnce();
+    */
+    CAN_REQ(PID_MONITOR);
 
     loop_rate.sleep();
   }

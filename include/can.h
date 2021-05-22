@@ -27,8 +27,10 @@ int close_port();
 
 void CAN_initalize(void);
 void CAN_write(BYTE data_array[]);
-void CAN_REQ(BYTE R_PID,BYTE Recieve_arr[]);
+void CAN_REQ(BYTE R_PID);
+void CAN_read(void);
 int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
+
 
 
 #endif // CAN_OLA_H

@@ -116,40 +116,24 @@ void CAN_write(BYTE data_array[]){
 }
 
 
-void CAN_REQ(BYTE R_PID,BYTE Recieve_arr[]){
+void CAN_REQ(BYTE R_PID){
 
-  struct can_frame frame_rd;
-  int recvbytes = 0;
-  struct timeval timeout = {0, 50};  //s, us
 
-  fd_set readSet;
 //****************REQ***********************************//
   BYTE REQ_Arr[8] = {PID_REQ_PID_DATA, R_PID,0,0,0,0,0,0};
   CAN_write(REQ_Arr);
 //****************REQ***********************************//
 
-  FD_ZERO(&readSet);
-  FD_SET(soc, &readSet);
+}
 
-  if (select((soc + 1), &readSet, NULL, NULL, &timeout) >= 0){
+void CAN_read(void){
 
-      if (FD_ISSET(soc, &readSet)){
-
-        recvbytes = read(soc, &frame_rd, sizeof(struct can_frame));
-
-        if(recvbytes){
-            Recieve_arr = frame_rd.data;
-        }
-        else{
-          ROS_WARN("CAN_REQ_FAIL_1");
-        }
-      }
-
+  struct can_frame frame_rd;
+  read(soc, &frame_rd, sizeof(struct can_frame));
+  int i=0;
+  for(i=0;i<7;i++){
+    ROS_INFO("data(%d) = %d",i,frame_rd.data[i]);
   }
-  else{
-    ROS_WARN("CAN_REQ_FAIL_2");
-  }
-
 
 }
 
