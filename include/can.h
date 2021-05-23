@@ -12,6 +12,9 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <unistd.h>
+#include <stdlib.h>
+
+using namespace std;
 
 
 #define PID_REQ_PID_DATA 4

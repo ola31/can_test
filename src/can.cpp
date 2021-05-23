@@ -95,6 +95,23 @@ int close_port()
 
 void CAN_initalize(void){
 
+  string command = "sudo slcand -o -c -s5 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+ /*
+  * (can bit-rate)
+  * -s0 : 10k(bps)
+  * -s1 : 20k
+  * -s2 : 50k
+  * -s3 : 100k
+  * -s4 : 125k
+  * -s5 : 250k
+  * -s6 : 500k
+  * -s7 : 750k
+  * -s8 : 1M
+  */
+
+  const char *c = command.c_str();
+  system(c);        //터미널에 명령 전달 
+
   if(open_port("can0")==-1)
     ROS_WARN("CAN_initalize_Failed");
   else
