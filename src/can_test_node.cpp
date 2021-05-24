@@ -3,13 +3,13 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "std_msgs/Int16.h"
+#include "std_msgs/Int8.h"
 #include "geometry_msgs/Twist.h"
 #include "can_test/rpm.h"
 
 static int operating_mode=2;           //start mode = cmd_vel mode
 
-void modeCallback(const std_msgs::Int16::ConstPtr& msg){
+void modeCallback(const std_msgs::Int8::ConstPtr& msg){
 
   if(operating_mode != msg->data){
     Torque_OFF();
