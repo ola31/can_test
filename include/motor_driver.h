@@ -10,8 +10,8 @@
 
 #define PI 3.141593
 
-#define wheel_separation 50.5
-#define wheel_radius 14
+#define wheel_separation 0.470
+#define wheel_radius 0.150
 
 #define PID_VER 1            //CAN통신 주고받기 가능 여부 테스트 위한 것
 #define PID_PNT_VEL_CMD 207
