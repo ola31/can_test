@@ -23,6 +23,7 @@ struct Encoder_data{
   int L_posi;
 };
 
+static int r_rpm_g,l_rpm_g;
 
 void send_RPM(short R_RPM, short L_RPM);
 struct Encoder_data read_Encoder(void);

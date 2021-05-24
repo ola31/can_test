@@ -22,6 +22,9 @@ void send_RPM(short R_RPM, short L_RPM){
   RPM_vel_arr[6]=D6;
 
   CAN_write(RPM_vel_arr);
+
+  r_rpm_g = R_RPM;
+  l_rpm_g = L_RPM;
   //ROS_INFO("CAN_wrtie");
 }
 
