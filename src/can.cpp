@@ -93,7 +93,7 @@ int close_port()
     return 0;
 }
 
-void CAN_initalize(void){
+void CAN_initialize(void){
 
   string command = "sudo slcand -o -c -s5 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
  /*
@@ -110,10 +110,17 @@ void CAN_initalize(void){
   */
 
   const char *c = command.c_str();
-  system(c);        //터미널에 명령 전달 
+
+  if(system(c) == 0)       //터미널에 명령 전달
+    ROS_INFO("Set bit_rate 250kbps"); //-s5
+
+  else
+    ROS_WARN("CAN init Setting Failed");
+
 
   if(open_port("can0")==-1)
     ROS_WARN("CAN_initalize_Failed");
+
   else
     ROS_INFO("initailze_CAN");
 }
@@ -124,9 +131,9 @@ void CAN_write(BYTE data_array[]){
 
   struct can_frame frame;
   frame.can_id = 0xB7AC01 ;        //32bit
-  frame.can_id |= CAN_EFF_FLAG;
+  frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
   frame.can_dlc=8;                 //8bit
-  memcpy(frame.data,data_array,8);  //copy data_array->frame
+  memcpy(frame.data,data_array,8); //copy (data_array)->(frame)
 
   if(send_port(&frame) == -1){
     ROS_WARN("CAN_write_fuction error");

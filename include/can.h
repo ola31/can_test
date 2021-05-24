@@ -33,7 +33,7 @@ int send_port(struct can_frame *frame);
 void read_port();
 int close_port();
 
-void CAN_initalize(void);
+void CAN_initialize(void);
 void CAN_write(BYTE data_array[]);
 void CAN_REQ(BYTE R_PID);
 struct CAN_data CAN_read(void);
