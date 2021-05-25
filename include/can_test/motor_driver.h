@@ -1,7 +1,7 @@
 #ifndef MOTOR_DRIVER_H
 #define MOTOR_DRIVER_H
 
-#include "can.h"
+#include "can_test/can.h"
 
 #define GEAR_RATIO 30
 

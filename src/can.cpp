@@ -1,4 +1,4 @@
-#include "can.h"
+#include "can_test/can.h"
 
 int soc;
 int read_can_port;

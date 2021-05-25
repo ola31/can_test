@@ -1,5 +1,5 @@
-#include "can.h"
-#include "motor_driver.h"
+#include "can_test/can.h"
+#include "can_test/motor_driver.h"
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
