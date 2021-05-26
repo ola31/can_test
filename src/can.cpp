@@ -111,18 +111,27 @@ void CAN_initialize(void){
 
   const char *c = command.c_str();
 
-  if(system(c) == 0)       //터미널에 명령 전달
-    ROS_INFO("Set bit_rate 250kbps"); //-s5
+  int i;
 
-  else
-    ROS_WARN("CAN init Setting Failed");
+  for(i=0;i<5;i++){
+    if(system(c) == 0){       //터미널에 명령 전달
+      ROS_INFO("Set bit_rate 250kbps"); //-s5
+      break;
+    }
+    else
+      ROS_WARN("CAN init Setting Failed");
 
+  }
 
-  if(open_port("can0")==-1)
-    ROS_WARN("CAN_initalize_Failed");
+  for(i=0;i<5;i++){
+    if(open_port("can0")==-1)
+      ROS_WARN("CAN_initalize_Failed");
 
-  else
-    ROS_INFO("initailze_CAN");
+    else{
+      ROS_INFO("initailze_CAN");
+      break;
+    }
+  }
 }
 
 
