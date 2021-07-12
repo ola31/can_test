@@ -5,15 +5,15 @@ void send_RPM(short R_RPM, short L_RPM){
 
   BYTE RPM_vel_arr[8]={PID_PNT_VEL_CMD,1,0,0,1,0,0,0};
 
-  //오른쪽 모터 : 1번모터(D2,D3) ,왼쪽모터 2번 모터(D5,D6)
+  //오른쪽 모터 : 2번모터(D2,D3) ,왼쪽모터 1번 모터(D5,D6)
   //int8_t D1 =1;         //2ch 제어기는 D1,D4가 0이 아니면 두 채널 모두 구동(??)
 
-  BYTE D2=R_RPM & 0xff;        //Low data
-  BYTE D3=R_RPM>>8 & 0xff;     //high data
+  BYTE D2=L_RPM & 0xff;        //Low data
+  BYTE D3=L_RPM>>8 & 0xff;     //high data
 
   //BYTE D4=1;
-  BYTE D5=L_RPM & 0xff;        //Low data
-  BYTE D6=L_RPM>>8 & 0xff;     //high data
+  BYTE D5=R_RPM & 0xff;        //Low data
+  BYTE D6=R_RPM>>8 & 0xff;     //high data
   //BYTE D7;
 
   RPM_vel_arr[2]=D2;
@@ -70,11 +70,11 @@ struct Encoder_data read_Encoder(void){
 
   if(can_data.pid == PID_MONITOR){
   
-     enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+     enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else if(can_data.pid == PID_MONITOR2){
   
-     enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+     enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else{
     ROS_WARN("Read_Encoder_failed 1");
@@ -84,10 +84,10 @@ struct Encoder_data read_Encoder(void){
   can_data = CAN_read();
 
   if(can_data.pid == PID_MONITOR){
-     enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+     enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else if(can_data.pid == PID_MONITOR2){
-     enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
+     enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else{
     ROS_WARN("Read_Encoder_failed 2");
@@ -122,8 +122,8 @@ void contol_vel(float *cmd_vel){
 
   short R_wheel_RPM=0,L_wheel_RPM=0;  //signed 16 bit
 
-  R_wheel_RPM = (short)(GEAR_RATIO*30.0*((2*lin_vel) + (wheel_separation*ang_vel))/(2*wheel_radius*PI));
-  L_wheel_RPM = -1*(short)(GEAR_RATIO*30.0*((2*lin_vel) - (wheel_separation*ang_vel))/(2*wheel_radius*PI));
+  R_wheel_RPM = (short)(GEAR_RATIO*30.0*((2*lin_vel) - (wheel_separation*ang_vel))/(2*wheel_radius*PI));
+  L_wheel_RPM = -1*(short)(GEAR_RATIO*30.0*((2*lin_vel) + (wheel_separation*ang_vel))/(2*wheel_radius*PI));
 
   send_RPM(R_wheel_RPM,L_wheel_RPM);
 

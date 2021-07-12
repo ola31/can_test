@@ -13,13 +13,20 @@ void modeCallback(const std_msgs::Int8::ConstPtr& msg){
 
   if(operating_mode != msg->data){
     Torque_OFF();
+    //ROS_INFO("modecallback1");
   }
   operating_mode = msg->data;
 
-  if(operating_mode == 1)
-    ROS_INFO("Operating Mode : RPM control mode");
-  else if(operating_mode == 2)
-    ROS_INFO("Operating Mode : CMD_VEL control mode");
+  //ROS_INFO("modecallback2");
+
+  if(operating_mode == 1){}
+    //ROS_INFO("Operating Mode : RPM control mode");
+  else if(operating_mode == 2){}
+    //ROS_INFO("Operating Mode : CMD_VEL control mode");
+  else if(operating_mode == 0){
+    ROS_INFO("TQ_OFF!!");
+    Torque_OFF();
+  }
   else
     ROS_WARN("Invalid control mode number");
 }
@@ -32,17 +39,19 @@ void cmd_velCallback(const geometry_msgs::Twist::ConstPtr& msg){
 
   if(operating_mode == 2){
      contol_vel(vel_arr);
-    ROS_INFO("Linear_x : %f angular_z : %f",linear_x,angular_z);
+    //ROS_INFO("Linear_x : %f angular_z : %f",linear_x,angular_z);
   }
 }
 
 void rpmCallback(const can_test::rpm::ConstPtr& msg){
 
   if(operating_mode == 1){
-    int r_rpm = msg->r_rpm;
+    //ROS_INFO("rpmcallback1");
+    int r_rpm = (msg->r_rpm)*-1;
     int l_rpm = msg->l_rpm;
     send_RPM(r_rpm,l_rpm);
   }
+  //ROS_INFO("rpmcallback2");
 
 }
 
@@ -61,7 +70,7 @@ int main(int argc, char **argv)
   CAN_initialize();
   Reset_ENC();
 
-  send_RPM(100,100);
+  //send_RPM(100,100);
   
   struct Encoder_data enc_data;
 
