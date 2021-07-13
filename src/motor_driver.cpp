@@ -5,15 +5,15 @@ void send_RPM(short R_RPM, short L_RPM){
 
   BYTE RPM_vel_arr[8]={PID_PNT_VEL_CMD,1,0,0,1,0,0,0};
 
-  //오른쪽 모터 : 2번모터(D2,D3) ,왼쪽모터 1번 모터(D5,D6)
+  //오른쪽 모터 : 1번모터(D2,D3) ,왼쪽모터 2번 모터(D5,D6)
   //int8_t D1 =1;         //2ch 제어기는 D1,D4가 0이 아니면 두 채널 모두 구동(??)
 
-  BYTE D2=L_RPM & 0xff;        //Low data
-  BYTE D3=L_RPM>>8 & 0xff;     //high data
+  BYTE D2=R_RPM & 0xff;        //Low data
+  BYTE D3=R_RPM>>8 & 0xff;     //high data
 
   //BYTE D4=1;
-  BYTE D5=R_RPM & 0xff;        //Low data
-  BYTE D6=R_RPM>>8 & 0xff;     //high data
+  BYTE D5=L_RPM & 0xff;        //Low data
+  BYTE D6=L_RPM>>8 & 0xff;     //high data
   //BYTE D7;
 
   RPM_vel_arr[2]=D2;
@@ -25,7 +25,7 @@ void send_RPM(short R_RPM, short L_RPM){
 
   r_rpm_g = R_RPM;
   l_rpm_g = L_RPM;
-  //ROS_INFO("CAN_wrtie");
+  //ROS_INFO("CAN_write");
 }
 
 /*
@@ -53,27 +53,27 @@ void Encoder_REQ(void){
 }
 /*
 struct Encoder_data read_Encoder(void){
-  
+
   struct Encoder_data enc_data;
-  
-  
+
+
  // enc_data.R_posi=read_R_Encoder();
 //enc_data.L_posi=read_L_Encoder();
   return enc_data;
 }*/
 
 struct Encoder_data read_Encoder(void){
-  
+
   struct CAN_data can_data;
   struct Encoder_data enc_data;
   can_data = CAN_read();
 
   if(can_data.pid == PID_MONITOR){
-  
+
      enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else if(can_data.pid == PID_MONITOR2){
-  
+
      enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else{
@@ -93,9 +93,9 @@ struct Encoder_data read_Encoder(void){
     ROS_WARN("Read_Encoder_failed 2");
     //return 0;
   }
-  
+
   return enc_data;
-   
+
 }
 
 void Torque_OFF(void){

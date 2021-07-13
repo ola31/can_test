@@ -74,7 +74,7 @@ int main(int argc, char **argv)
   Reset_ENC();
 
   //send_RPM(100,100);
-  
+
   struct Encoder_data enc_data;
 
   Encoder_REQ();
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     enc_data = read_Encoder();
-        
+
     ROS_INFO("R_posi : %d   L_posi : %d",enc_data.R_posi,enc_data.L_posi);
 
     can_test::rpm msg;
