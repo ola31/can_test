@@ -27,6 +27,9 @@ void modeCallback(const std_msgs::Int8::ConstPtr& msg){
     ROS_INFO("TQ_OFF!!");
     Torque_OFF();
   }
+ else if(operating_mode == 3){
+    //ROS_INFO("Dymanic cmd_vel mode");
+ }
   else
     ROS_WARN("Invalid control mode number");
 }
@@ -37,7 +40,7 @@ void cmd_velCallback(const geometry_msgs::Twist::ConstPtr& msg){
   float angular_z = msg->angular.z;
   float vel_arr[2] = {linear_x,angular_z};
 
-  if(operating_mode == 2){
+  if(operating_mode == 2 || operating_mode==3){
      contol_vel(vel_arr);
     //ROS_INFO("Linear_x : %f angular_z : %f",linear_x,angular_z);
   }
