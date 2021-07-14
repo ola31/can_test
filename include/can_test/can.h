@@ -41,16 +41,26 @@ enum Bit_rate {
   _1M
 };
 
-int open_port(const char *port);
-int send_port(struct can_frame *frame);
-void read_port();
-int close_port();
+class CAN
+{
 
-void CAN_initialize(int bit_rate_mode);
-void CAN_write(BYTE data_array[]);
-void CAN_REQ(BYTE R_PID);
-struct CAN_data CAN_read(void);
-int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
+  private:
+    int soc;
+    int read_can_port;
+
+  public:
+    int open_port(const char *port);
+    int send_port(struct can_frame *frame);
+    void read_port();
+    int close_port();
+
+    void CAN_initialize(int bit_rate_mode);
+    void CAN_write(BYTE data_array[]);
+    void CAN_REQ(BYTE R_PID);
+    struct CAN_data CAN_read(void);
+    int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
+
+};
 
 
 

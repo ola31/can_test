@@ -1,5 +1,5 @@
-#include "can_test/can.h"
-#include "can_test/motor_driver.h"
+//#include "can_test/can.h"
+#include "can_test/can_test_node.h"
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -12,7 +12,7 @@ static int operating_mode=2;           //start mode = cmd_vel mode
 void modeCallback(const std_msgs::Int8::ConstPtr& msg){
 
   if(operating_mode != msg->data){
-    Torque_OFF();
+    md.Torque_OFF();
     //ROS_INFO("modecallback1");
   }
   operating_mode = msg->data;
@@ -25,7 +25,7 @@ void modeCallback(const std_msgs::Int8::ConstPtr& msg){
     //ROS_INFO("Operating Mode : CMD_VEL control mode");
   else if(operating_mode == 0){
     ROS_INFO("TQ_OFF!!");
-    Torque_OFF();
+    md.Torque_OFF();
   }
  else if(operating_mode == 3){
     //ROS_INFO("Dymanic cmd_vel mode");
@@ -41,7 +41,7 @@ void cmd_velCallback(const geometry_msgs::Twist::ConstPtr& msg){
   float vel_arr[2] = {linear_x,angular_z};
 
   if(operating_mode == 2 || operating_mode==3){
-     contol_vel(vel_arr);
+     md.contol_vel(vel_arr);
     //ROS_INFO("Linear_x : %f angular_z : %f",linear_x,angular_z);
   }
 }
@@ -52,7 +52,7 @@ void rpmCallback(const can_test::rpm::ConstPtr& msg){
     //ROS_INFO("rpmcallback1");
     int r_rpm = (msg->r_rpm)*-1;
     int l_rpm = msg->l_rpm;
-    send_RPM(r_rpm,l_rpm);
+    md.send_RPM(r_rpm,l_rpm);
   }
   //ROS_INFO("rpmcallback2");
 
@@ -70,19 +70,19 @@ int main(int argc, char **argv)
 
   ros::Rate loop_rate(10);
 
-  CAN_initialize(_250k);
-  Reset_ENC();
+  md.initialize_md_driver();
+  md.Reset_ENC();
 
   //send_RPM(100,100);
 
   struct Encoder_data enc_data;
 
-  Encoder_REQ();
+  md.Encoder_REQ();
   loop_rate.sleep();
 
   while (ros::ok())
   {
-    enc_data = read_Encoder();
+    enc_data = md.read_Encoder();
 
     ROS_INFO("R_posi : %d   L_posi : %d",enc_data.R_posi,enc_data.L_posi);
 
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 
     ros::spinOnce();
 
-    Encoder_REQ();
+    md.Encoder_REQ();
     loop_rate.sleep();
   }
 

@@ -1,9 +1,7 @@
 #include "can_test/can.h"
 
-int soc;
-int read_can_port;
 
-int open_port(const char *port)
+int CAN::open_port(const char *port)
 {
     struct ifreq ifr;
     struct sockaddr_can addr;
@@ -37,7 +35,7 @@ int open_port(const char *port)
     return 0;
 }
 
-int send_port(struct can_frame *frame)
+int CAN::send_port(struct can_frame *frame)
 {
     int retval;
    retval = write(soc, frame, sizeof(struct can_frame));
@@ -53,7 +51,7 @@ int send_port(struct can_frame *frame)
 
 /* this is just an example, run in a thread */
 /* not use this function*/
-void read_port()
+void CAN::read_port()
 {
     struct can_frame frame_rd;
     int recvbytes = 0;
@@ -87,13 +85,13 @@ void read_port()
 
 }
 
-int close_port()
+int CAN::close_port()
 {
     close(soc);
     return 0;
 }
 
-void CAN_initialize(int bit_rate_mode){
+void CAN::CAN_initialize(int bit_rate_mode){
 /*
   * (can bit-rate)
   * -s0 : 10k(bps)
@@ -193,7 +191,7 @@ default:
 
 
 
-void CAN_write(BYTE data_array[]){
+void CAN::CAN_write(BYTE data_array[]){
 
   struct can_frame frame;
   frame.can_id = 0xB7AC01 ;        //32bit
@@ -207,7 +205,7 @@ void CAN_write(BYTE data_array[]){
 }
 
 
-void CAN_REQ(BYTE R_PID){
+void CAN::CAN_REQ(BYTE R_PID){
 
 
 //****************REQ***********************************//
@@ -217,7 +215,7 @@ void CAN_REQ(BYTE R_PID){
 
 }
 
-struct CAN_data CAN_read(void){
+struct CAN_data CAN::CAN_read(void){
 
   struct can_frame frame_rd;
   struct CAN_data can_data;
@@ -242,7 +240,7 @@ struct CAN_data CAN_read(void){
 /***********************************************************
  * 1바이트 D4,D5,D6,D7 데이터를 받아 원 데이터인 4바이트 정수를 만듬
  ***********************************************************/
-int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7)
+int CAN::Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7)
 {
   return ((int)d4 | (int)d5<<8 | (int)d6<<16 | (int)d7<<24);
 }

@@ -1,7 +1,11 @@
 #include "can_test/motor_driver.h"
 
 
-void send_RPM(short R_RPM, short L_RPM){
+void md_driver::initialize_md_driver(void){
+  CAN_initialize(_250k);  //CAN bit_rate : 250kbps
+}
+
+void md_driver::send_RPM(short R_RPM, short L_RPM){
 
   BYTE RPM_vel_arr[8]={PID_PNT_VEL_CMD,1,0,0,1,0,0,0};
 
@@ -47,7 +51,7 @@ void read_Encoder(int *left_value, int *right_value){
 
 */
 
-void Encoder_REQ(void){
+void md_driver::Encoder_REQ(void){
     CAN_REQ(PID_MONITOR);
     CAN_REQ(PID_MONITOR2);
 }
@@ -62,7 +66,7 @@ struct Encoder_data read_Encoder(void){
   return enc_data;
 }*/
 
-struct Encoder_data read_Encoder(void){
+struct Encoder_data md_driver::read_Encoder(void){
 
   struct CAN_data can_data;
   struct Encoder_data enc_data;
@@ -98,13 +102,13 @@ struct Encoder_data read_Encoder(void){
 
 }
 
-void Torque_OFF(void){
+void md_driver::Torque_OFF(void){
   BYTE TQ_OFF[8]={5,0,0,0,0,0,0,0};  //자연정지 PID_TQ_OFF(5번) ,private??
   CAN_write(TQ_OFF);
   ROS_INFO("Motor_Torque_OFF");
 }
 
-void Reset_ENC(void){
+void md_driver::Reset_ENC(void){
   BYTE reset[8] = {13,0,0,0,0,0,0,0};
   CAN_write(reset);
 }
@@ -116,7 +120,7 @@ void Reset_ENC(void){
  * 실제 사용하는 모터구동함수
  ****************************************************************************/
 
-void contol_vel(float *cmd_vel){
+void md_driver::contol_vel(float *cmd_vel){
   float lin_vel = cmd_vel[LINEAR];
   float ang_vel = cmd_vel[ANGULAR];
 

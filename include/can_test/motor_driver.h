@@ -25,12 +25,22 @@ struct Encoder_data{
 
 static int r_rpm_g,l_rpm_g;
 
-void send_RPM(short R_RPM, short L_RPM);
-struct Encoder_data read_Encoder(void);
-void Encoder_REQ(void);
-void Torque_OFF(void);
-void contol_vel(float *cmd_vel);
-void Reset_ENC(void);
+
+
+class md_driver : public CAN
+{
+  public:
+    void initialize_md_driver(void);
+    void send_RPM(short R_RPM, short L_RPM);
+    struct Encoder_data read_Encoder(void);
+    void Encoder_REQ(void);
+    void Torque_OFF(void);
+    void contol_vel(float *cmd_vel);
+    void Reset_ENC(void);
+
+};
+
+
 
 
 #endif // MOTOR_DRIVER_H
