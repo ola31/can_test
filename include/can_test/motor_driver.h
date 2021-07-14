@@ -37,6 +37,7 @@ class md_driver : public CAN
     void Torque_OFF(void);
     void contol_vel(float *cmd_vel);
     void Reset_ENC(void);
+    int md_driver::Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
 
 };
 

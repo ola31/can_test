@@ -132,3 +132,11 @@ void md_driver::contol_vel(float *cmd_vel){
   send_RPM(R_wheel_RPM,L_wheel_RPM);
 
 }
+
+
+/***********************************************************
+ * 1바이트 D4,D5,D6,D7 데이터를 받아 원 데이터인 4바이트 정수를 만듬
+ ***********************************************************/
+int md_driver::Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7)
+{
+  return ((int)d4 | (int)d5<<8 | (int)d6<<16 | (int)d7<<24);

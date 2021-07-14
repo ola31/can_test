@@ -58,7 +58,6 @@ class CAN
     void CAN_write(BYTE data_array[]);
     void CAN_REQ(BYTE R_PID);
     struct CAN_data CAN_read(void);
-    int Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7);
 
 };
 
