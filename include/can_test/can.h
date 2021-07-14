@@ -17,16 +17,13 @@
 using namespace std;
 
 
-#define PID_REQ_PID_DATA 4
-
-
 typedef unsigned char  BYTE;  //8bit
 typedef unsigned short BYTE2; //16bit
 typedef unsigned int BYTE4;   //32bit
 
 struct CAN_data{
-BYTE pid;
-BYTE data[7];
+//BYTE pid;
+BYTE data[8];
 };
 
 enum Bit_rate {

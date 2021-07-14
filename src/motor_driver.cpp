@@ -51,9 +51,19 @@ void read_Encoder(int *left_value, int *right_value){
 
 */
 
+void md_driver::Data_REQ(BYTE R_PID){
+
+//****************REQ***********************************//
+  BYTE REQ_Arr[8] = {PID_REQ_PID_DATA, R_PID,0,0,0,0,0,0};
+  CAN_write(REQ_Arr);
+//****************REQ***********************************//
+
+}
+
+
 void md_driver::Encoder_REQ(void){
-    CAN_REQ(PID_MONITOR);
-    CAN_REQ(PID_MONITOR2);
+    Data_REQ(PID_MONITOR);
+    Data_REQ(PID_MONITOR2);
 }
 /*
 struct Encoder_data read_Encoder(void){
@@ -72,11 +82,11 @@ struct Encoder_data md_driver::read_Encoder(void){
   struct Encoder_data enc_data;
   can_data = CAN_read();
 
-  if(can_data.pid == PID_MONITOR){
+  if(can_data.data[0] == PID_MONITOR){
 
      enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
-  else if(can_data.pid == PID_MONITOR2){
+  else if(can_data.data[0] == PID_MONITOR2){
 
      enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
@@ -87,10 +97,10 @@ struct Encoder_data md_driver::read_Encoder(void){
 
   can_data = CAN_read();
 
-  if(can_data.pid == PID_MONITOR){
+  if(can_data.data[0] == PID_MONITOR){
      enc_data.L_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
-  else if(can_data.pid == PID_MONITOR2){
+  else if(can_data.data[0] == PID_MONITOR2){
      enc_data.R_posi = Byte2Int32(can_data.data[4],can_data.data[5],can_data.data[6],can_data.data[7]);
   }
   else{
@@ -140,3 +150,4 @@ void md_driver::contol_vel(float *cmd_vel){
 int md_driver::Byte2Int32(BYTE d4, BYTE d5, BYTE d6, BYTE d7)
 {
   return ((int)d4 | (int)d5<<8 | (int)d6<<16 | (int)d7<<24);
+}

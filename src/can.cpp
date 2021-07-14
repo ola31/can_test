@@ -205,16 +205,6 @@ void CAN::CAN_write(BYTE data_array[]){
 }
 
 
-void CAN::CAN_REQ(BYTE R_PID){
-
-
-//****************REQ***********************************//
-  BYTE REQ_Arr[8] = {PID_REQ_PID_DATA, R_PID,0,0,0,0,0,0};
-  CAN_write(REQ_Arr);
-//****************REQ***********************************//
-
-}
-
 struct CAN_data CAN::CAN_read(void){
 
   struct can_frame frame_rd;
@@ -225,9 +215,9 @@ struct CAN_data CAN::CAN_read(void){
       //return;
   }
 
-  can_data.pid=frame_rd.data[0];
+  //can_data.pid=frame_rd.data[0];
   int i;
-  for(i=1;i<8;i++){
+  for(i=0;i<8;i++){
     can_data.data[i]=frame_rd.data[i];
   }
   return can_data;
