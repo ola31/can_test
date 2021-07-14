@@ -122,8 +122,8 @@ void contol_vel(float *cmd_vel){
 
   short R_wheel_RPM=0,L_wheel_RPM=0;  //signed 16 bit
 
-  R_wheel_RPM = (short)(GEAR_RATIO*30.0*((2*lin_vel) - (wheel_separation*ang_vel))/(2*wheel_radius*PI));
-  L_wheel_RPM = -1*(short)(GEAR_RATIO*30.0*((2*lin_vel) + (wheel_separation*ang_vel))/(2*wheel_radius*PI));
+  R_wheel_RPM = -1*(short)(GEAR_RATIO*30.0*((2*lin_vel) + (wheel_separation*ang_vel))/(2*wheel_radius*PI));
+  L_wheel_RPM = (short)(GEAR_RATIO*30.0*((2*lin_vel) - (wheel_separation*ang_vel))/(2*wheel_radius*PI));
 
   send_RPM(R_wheel_RPM,L_wheel_RPM);
 
