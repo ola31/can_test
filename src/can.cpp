@@ -93,10 +93,8 @@ int close_port()
     return 0;
 }
 
-void CAN_initialize(void){
-
-  string command = "sudo slcand -o -c -s5 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
- /*
+void CAN_initialize(int bit_rate_mode){
+/*
   * (can bit-rate)
   * -s0 : 10k(bps)
   * -s1 : 20k
@@ -108,14 +106,73 @@ void CAN_initialize(void){
   * -s7 : 750k
   * -s8 : 1M
   */
+  string command_0 = "sudo slcand -o -c -s /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_1 = "sudo slcand -o -c -s1 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_2 = "sudo slcand -o -c -s2 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_3 = "sudo slcand -o -c -s3 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_4 = "sudo slcand -o -c -s4 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_5 = "sudo slcand -o -c -s5 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_6 = "sudo slcand -o -c -s6 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_7 = "sudo slcand -o -c -s7 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_8 = "sudo slcand -o -c -s8 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+
+  string command = command_0; //초기화
+  string bps_s = "10k"; //초기화
+
+switch (bit_rate_mode)
+{
+case 0:
+  command = command_0;
+  bps_s = "10k";
+  break;
+case 1:
+  command = command_1;
+  bps_s = "20k";
+  break;
+case 2:
+  command = command_2;
+  bps_s = "50k";
+  break;
+case 3:
+  command = command_3;
+  bps_s = "100k";
+  break;
+case 4:
+  command = command_4;
+  bps_s = "125k";
+  break;
+case 5:
+  command = command_5;
+  bps_s = "250k";
+  break;
+case 6:
+  command = command_6;
+  bps_s = "500k";
+  break;
+case 7:
+  command = command_7;
+  bps_s = "750k";
+  break;
+case 8:
+  command = command_8;
+  bps_s = "1M";
+  break;
+
+default:
+  command = command_5;
+  bps_s = "10k";
+  break;
+}
+
 
   const char *c = command.c_str();
+  const char *c2 = bps_s.c_str();
 
   int i;
 
   for(i=0;i<5;i++){
     if(system(c) == 0){       //터미널에 명령 전달
-      ROS_INFO("Set bit_rate 250kbps"); //-s5
+      ROS_INFO("Set bit_rate %s",c2); //-s5
       break;
     }
     else
@@ -175,7 +232,7 @@ struct CAN_data CAN_read(void){
   for(i=1;i<8;i++){
     can_data.data[i]=frame_rd.data[i];
   }
-  return can_data; 
+  return can_data;
 
 }
 

@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
   ros::Rate loop_rate(10);
 
-  CAN_initialize();
+  CAN_initialize(5);
   Reset_ENC();
 
   //send_RPM(100,100);
