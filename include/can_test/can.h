@@ -19,6 +19,7 @@ using namespace std;
 
 #define PID_REQ_PID_DATA 4
 
+
 typedef unsigned char  BYTE;  //8bit
 typedef unsigned short BYTE2; //16bit
 typedef unsigned int BYTE4;   //32bit
@@ -26,6 +27,18 @@ typedef unsigned int BYTE4;   //32bit
 struct CAN_data{
 BYTE pid;
 BYTE data[7];
+};
+
+enum Bit_rate {
+  _10k = 0,
+  _20k,
+  _50k,
+  _100k,
+  _125k,
+  _250k,
+  _500k,
+  _750k,
+  _1M
 };
 
 int open_port(const char *port);

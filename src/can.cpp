@@ -106,7 +106,7 @@ void CAN_initialize(int bit_rate_mode){
   * -s7 : 750k
   * -s8 : 1M
   */
-  string command_0 = "sudo slcand -o -c -s /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
+  string command_0 = "sudo slcand -o -c -s0 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
   string command_1 = "sudo slcand -o -c -s1 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
   string command_2 = "sudo slcand -o -c -s2 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
   string command_3 = "sudo slcand -o -c -s3 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
