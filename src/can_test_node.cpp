@@ -5,10 +5,9 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Int8.h"
 #include "geometry_msgs/Twist.h"
-#include "can_test/rpm.h"
 
 static int operating_mode=2;           //start mode = cmd_vel mode
-
+/*
 void modeCallback(const std_msgs::Int8::ConstPtr& msg){
 
   if(operating_mode != msg->data){
@@ -57,44 +56,35 @@ void rpmCallback(const can_test::rpm::ConstPtr& msg){
   //ROS_INFO("rpmcallback2");
 
 }
-
+*/
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "can_test_node");
   ros::NodeHandle nh;
 
-  ros::Publisher present_rpm_pub = nh.advertise<can_test::rpm>("/present_rpm", 1000);
-  ros::Subscriber mode_sub = nh.subscribe("/mode", 1000, modeCallback);
-  ros::Subscriber cmd_vel_sub = nh.subscribe("/cmd_vel", 1000, cmd_velCallback);
-  ros::Subscriber rpm_sub = nh.subscribe("/rpm", 1000, rpmCallback);
+  //ros::Publisher present_rpm_pub = nh.advertise<can_test::rpm>("/present_rpm", 1000);
+  //ros::Subscriber mode_sub = nh.subscribe("/mode", 1000, modeCallback);
+  //ros::Subscriber cmd_vel_sub = nh.subscribe("/cmd_vel", 1000, cmd_velCallback);
+  //ros::Subscriber rpm_sub = nh.subscribe("/rpm", 1000, rpmCallback);
 
   ros::Rate loop_rate(10);
 
-  md.initialize_md_driver();
-  md.Reset_ENC();
+  can.CAN_initialize(_250k);
 
-  //send_RPM(100,100);
-
-  struct Encoder_data enc_data;
-
-  md.Encoder_REQ();
-  loop_rate.sleep();
+  struct CAN_data c_data;
+  BYTE can_array[8]={'H','e','l','l','o','C','A','N'};
 
   while (ros::ok())
   {
-    enc_data = md.read_Encoder();
+    c_data = can.CAN_read();
 
-    ROS_INFO("R_posi : %d   L_posi : %d",enc_data.R_posi,enc_data.L_posi);
+    //ROS_INFO("data[0] : %d",c_data.data[0]);
 
-    can_test::rpm msg;
-    msg.r_rpm = r_rpm_g;
-    msg.l_rpm = l_rpm_g;
-
-    present_rpm_pub.publish(msg);
+    //present_rpm_pub.publish(msg);
 
     ros::spinOnce();
 
-    md.Encoder_REQ();
+    can.CAN_write(can_array);
     loop_rate.sleep();
   }
 

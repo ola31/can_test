@@ -1,9 +1,8 @@
 #ifndef CAN_TEST_NODE_H
 #define CAN_TEST_NODE_H
 
-//#include "can_test/can.h"
-#include "can_test/motor_driver.h"
+#include "can_test/can.h"
 
-md_driver md;
+CAN can;
 
 #endif // CAN_TEST_NODE_H
