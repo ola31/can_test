@@ -1,5 +1,30 @@
 #include "can_test/can.h"
 
+CAN(){
+  port_s = "can0"
+}
+
+CAN(string port, int id){
+
+  port_s = port.c_str();
+  frame.can_id=id;
+  frame.can_dlc=8;
+}
+
+CAN(string port, int id, bool is_ext_mode){
+  port_s = port.c_str();
+
+  frame.can_id=id;
+  frame.can_dlc=8;
+  if(is_ext_mode){
+    frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
+  }
+}
+
+~CAN(){
+  close_port();
+}
+
 
 int CAN::open_port(const char *port)
 {
@@ -179,7 +204,7 @@ default:
   }
 
   for(i=0;i<5;i++){
-    if(open_port("can0")==-1)
+    if(open_port(port_s)==-1)            //port_s : CAN0, CAN1 etc...
       ROS_WARN("CAN_initalize_Failed");
 
     else{
@@ -193,10 +218,10 @@ default:
 
 void CAN::CAN_write(BYTE data_array[]){
 
-  struct can_frame frame;
-  frame.can_id = 0xB7AC01 ;        //32bit
-  frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
-  frame.can_dlc=8;                 //8bit
+  //struct can_frame frame;
+  //frame.can_id = 0xB7AC01 ;        //32bit
+  //frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
+  //frame.can_dlc=8;                 //8bit
   memcpy(frame.data,data_array,8); //copy (data_array)->(frame)
 
   if(send_port(&frame) == -1){
