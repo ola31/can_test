@@ -2,6 +2,9 @@
 
 CAN::CAN(){
   this->port_s = "can0";
+  this->frame.can_id=0xB7AC01;
+  this->frame.can_dlc=8;
+this->frame.can_id |= CAN_EFF_FLAG;
 }
 
 CAN::CAN(string port, int id){
@@ -9,6 +12,8 @@ CAN::CAN(string port, int id){
   this->port_s = port;
   this->frame.can_id=id;
   this->frame.can_dlc=8;
+this->frame.can_id |= CAN_EFF_FLAG;
+  
 }
 
 CAN::CAN(string port, int id, bool is_ext_mode){
