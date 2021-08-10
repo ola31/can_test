@@ -44,7 +44,7 @@ class CAN
   private:
     int soc;
     int read_can_port;
-    const char *port_s
+    string port_s;
     struct can_frame frame;
 
   public:
@@ -57,7 +57,7 @@ class CAN
     void read_port();
     int close_port();
 
-    void CAN_initialize(int bit_rate_mode);
+    void CAN_initialize(int bit_rate_mode,string port_name);
     void CAN_write(BYTE data_array[]);
     void CAN_REQ(BYTE R_PID);
     struct CAN_data CAN_read(void);

@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 
   ros::Rate loop_rate(10);
 
-  can.CAN_initialize(_250k);
+  can.CAN_initialize(_250k,"CAN0");
 
   struct CAN_data c_data;
   BYTE can_array[8]={'H','e','l','l','o','C','A','N'};
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
     ros::spinOnce();
 
-    can.CAN_write(can_array);
+    //can.CAN_write(can_array);
     loop_rate.sleep();
   }
 

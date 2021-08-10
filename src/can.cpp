@@ -1,27 +1,27 @@
 #include "can_test/can.h"
 
-CAN(){
-  port_s = "can0"
+CAN::CAN(){
+  this->port_s = "can0";
 }
 
-CAN(string port, int id){
+CAN::CAN(string port, int id){
 
-  port_s = port.c_str();
-  frame.can_id=id;
-  frame.can_dlc=8;
+  this->port_s = port;
+  this->frame.can_id=id;
+  this->frame.can_dlc=8;
 }
 
-CAN(string port, int id, bool is_ext_mode){
-  port_s = port.c_str();
+CAN::CAN(string port, int id, bool is_ext_mode){
+  this->port_s = port;
 
-  frame.can_id=id;
-  frame.can_dlc=8;
+  this->frame.can_id=id;
+  this->frame.can_dlc=8;
   if(is_ext_mode){
-    frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
+    this->frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
   }
 }
 
-~CAN(){
+CAN::~CAN(){
   close_port();
 }
 
@@ -116,7 +116,7 @@ int CAN::close_port()
     return 0;
 }
 
-void CAN::CAN_initialize(int bit_rate_mode){
+void CAN::CAN_initialize(int bit_rate_mode,string port_name){
 /*
   * (can bit-rate)
   * -s0 : 10k(bps)
@@ -129,16 +129,17 @@ void CAN::CAN_initialize(int bit_rate_mode){
   * -s7 : 750k
   * -s8 : 1M
   */
-  string command_0 = "sudo slcand -o -c -s0 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_1 = "sudo slcand -o -c -s1 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_2 = "sudo slcand -o -c -s2 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_3 = "sudo slcand -o -c -s3 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_4 = "sudo slcand -o -c -s4 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_5 = "sudo slcand -o -c -s5 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_6 = "sudo slcand -o -c -s6 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_7 = "sudo slcand -o -c -s7 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
-  string command_8 = "sudo slcand -o -c -s8 /dev/CAN0 can0 && sudo ifconfig can0 up && sudo ifconfig can0 txqueuelen 1000";
 
+
+  string command_0 = "sudo slcand -o -c -s0 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_1 = "sudo slcand -o -c -s1 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";//"sudo slcand -o -c -s1 /dev/"+ port_name + " can1 && sudo ifconfig can1 up && sudo ifconfig can1 txqueuelen 1000";
+  string command_2 = "sudo slcand -o -c -s2 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_3 = "sudo slcand -o -c -s3 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_4 = "sudo slcand -o -c -s4 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_5 = "sudo slcand -o -c -s5 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_6 = "sudo slcand -o -c -s6 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_7 = "sudo slcand -o -c -s7 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_8 = "sudo slcand -o -c -s8 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
   string command = command_0; //초기화
   string bps_s = "10k"; //초기화
 
@@ -191,11 +192,14 @@ default:
   const char *c = command.c_str();
   const char *c2 = bps_s.c_str();
 
+
+
   int i;
 
   for(i=0;i<5;i++){
     if(system(c) == 0){       //터미널에 명령 전달
       ROS_INFO("Set bit_rate %s",c2); //-s5
+      ROS_INFO("%s",c);
       break;
     }
     else
@@ -203,8 +207,10 @@ default:
 
   }
 
+  const char *port_sss = port_s.c_str();
+
   for(i=0;i<5;i++){
-    if(open_port(port_s)==-1)            //port_s : CAN0, CAN1 etc...
+    if(open_port(port_sss)==-1)            //port_s : can0, can1 etc...
       ROS_WARN("CAN_initalize_Failed");
 
     else{
