@@ -131,15 +131,15 @@ void CAN::CAN_initialize(int bit_rate_mode,string port_name){
   */
 
 
-  string command_0 = "sudo slcand -o -c -s0 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_1 = "sudo slcand -o -c -s1 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";//"sudo slcand -o -c -s1 /dev/"+ port_name + " can1 && sudo ifconfig can1 up && sudo ifconfig can1 txqueuelen 1000";
-  string command_2 = "sudo slcand -o -c -s2 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_3 = "sudo slcand -o -c -s3 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_4 = "sudo slcand -o -c -s4 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_5 = "sudo slcand -o -c -s5 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_6 = "sudo slcand -o -c -s6 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_7 = "sudo slcand -o -c -s7 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_8 = "sudo slcand -o -c -s8 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_0 = "echo '111111' | sudo -S slcand -o -c -s0 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_1 = "echo '111111' | sudo -S slcand -o -c -s1 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";//"sudo slcand -o -c -s1 /dev/"+ port_name + " can1 && sudo ifconfig can1 up && sudo ifconfig can1 txqueuelen 1000";
+  string command_2 = "echo '111111' | sudo -S slcand -o -c -s2 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_3 = "echo '111111' | sudo -S slcand -o -c -s3 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_4 = "echo '111111' | sudo -S slcand -o -c -s4 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_5 = "echo '111111' | sudo -S slcand -o -c -s5 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_6 = "echo '111111' | sudo -S slcand -o -c -s6 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_7 = "echo '111111' | sudo -S slcand -o -c -s7 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_8 = "echo '111111' | sudo -S slcand -o -c -s8 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
   string command = command_0; //초기화
   string bps_s = "10k"; //초기화
 
