@@ -21,12 +21,15 @@ typedef unsigned char  BYTE;  //8bit
 typedef unsigned short BYTE2; //16bit
 typedef unsigned int BYTE4;   //32bit
 
+
 /**
  * struct can_frame - basic CAN frame structure
  * @can_id:  the CAN ID of the frame and CAN_*_FLAG flags, see above.
  * @can_dlc: the data length field of the CAN frame
  * @data:    the CAN frame payload.
  */
+/// https://sites.uclouvain.be/SystInfo/usr/include/linux/can.h.html
+
 
 enum Bit_rate {
   _10k = 0,
@@ -46,8 +49,8 @@ class CAN
   private:
     int soc;
     int read_can_port;
-    string port_name = "can0";
-    string device_name = "ttyACM0";
+    string port_name;        //socket CAN port name. such as "can0"
+    string device_name;  //Port of USB_to_CAN device port such as "ttyACM0". Can find it in "/dev" directory.
 
   public:
     CAN(string port_name_, string device_name_);
