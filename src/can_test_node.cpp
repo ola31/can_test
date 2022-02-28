@@ -4,6 +4,8 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Int8.h"
 
+void print_CAN(struct can_frame frame);
+
 
 /************************
  *
@@ -38,14 +40,33 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     recv_frame = can.CAN_read();
+    print_CAN(recv_frame);
 
     can.CAN_write(send_frame1, can_array1);
     can.CAN_write(send_frame2, can_array2);
 
     ros::spinOnce();
-
     loop_rate.sleep();
   }
 
   return 0;
+}
+
+
+
+void print_CAN(struct can_frame frame){
+  printf("\n");
+  printf("can_id     : %x\n",frame.can_id);
+  printf("can_length : %d\n",frame.can_dlc);
+  printf("can_data   :\n");
+  printf("[%c,%c,%c,%c,%c,%c,%c,%c]\n",
+         frame.data[0],
+         frame.data[1],
+         frame.data[2],
+         frame.data[3],
+         frame.data[4],
+         frame.data[5],
+         frame.data[6],
+         frame.data[7] );
+  printf("\n");
 }
