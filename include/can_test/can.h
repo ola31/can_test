@@ -5,6 +5,7 @@
 #include "std_msgs/String.h"
 
 #include <stdio.h>
+#include <iostream>
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -16,15 +17,16 @@
 
 using namespace std;
 
-
 typedef unsigned char  BYTE;  //8bit
 typedef unsigned short BYTE2; //16bit
 typedef unsigned int BYTE4;   //32bit
 
-struct CAN_data{
-//BYTE pid;
-BYTE data[8];
-};
+/**
+ * struct can_frame - basic CAN frame structure
+ * @can_id:  the CAN ID of the frame and CAN_*_FLAG flags, see above.
+ * @can_dlc: the data length field of the CAN frame
+ * @data:    the CAN frame payload.
+ */
 
 enum Bit_rate {
   _10k = 0,
@@ -44,25 +46,23 @@ class CAN
   private:
     int soc;
     int read_can_port;
-    string port_s;
-    struct can_frame frame;
+    string port_name = "can0";
+    string device_name = "ttyACM0";
 
   public:
-    CAN();
-    CAN(string port, int id);
-    CAN(string port, int id, bool is_ext_mode);
+    CAN(string port_name_, string device_name_);
+    ~CAN();
 
     int open_port(const char *port);
     int send_port(struct can_frame *frame);
     void read_port();
     int close_port();
 
-    void CAN_initialize(int bit_rate_mode,string port_name);
-    void CAN_write(BYTE data_array[]);
-    void CAN_REQ(BYTE R_PID);
-    struct CAN_data CAN_read(void);
+    void CAN_initialize(int bit_rate_mode);
+    void set_can_frame(struct can_frame &canframe, u_int32_t CAN_id, u_int8_t CAN_data_len, bool is_ext_mode);
+    void CAN_write(struct can_frame &frame, BYTE data_array[]);
+    struct can_frame CAN_read(void);
 
-    ~CAN();
 
 };
 

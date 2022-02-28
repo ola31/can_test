@@ -1,29 +1,8 @@
 #include "can_test/can.h"
 
-CAN::CAN(){
-  this->port_s = "can0";
-  this->frame.can_id=0xB7AC01;
-  this->frame.can_dlc=8;
-this->frame.can_id |= CAN_EFF_FLAG;
-}
-
-CAN::CAN(string port, int id){
-
-  this->port_s = port;
-  this->frame.can_id=id;
-  this->frame.can_dlc=8;
-this->frame.can_id |= CAN_EFF_FLAG;
-  
-}
-
-CAN::CAN(string port, int id, bool is_ext_mode){
-  this->port_s = port;
-
-  this->frame.can_id=id;
-  this->frame.can_dlc=8;
-  if(is_ext_mode){
-    this->frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
-  }
+CAN::CAN(string port_name_, string device_name_){
+  this->port_name = port_name_;
+  this->device_name = device_name_;
 }
 
 CAN::~CAN(){
@@ -38,27 +17,21 @@ int CAN::open_port(const char *port)
 
     /* open socket */
     soc = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-    if(soc < 0)
-    {
+    if(soc < 0){
         return (-1);
     }
 
     addr.can_family = AF_CAN;
     strcpy(ifr.ifr_name, port);
 
-    if (ioctl(soc, SIOCGIFINDEX, &ifr) < 0)
-    {
-
+    if (ioctl(soc, SIOCGIFINDEX, &ifr) < 0){
         return (-1);
     }
 
     addr.can_ifindex = ifr.ifr_ifindex;
-
     fcntl(soc, F_SETFL, O_NONBLOCK);
 
-    if (bind(soc, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    {
-
+    if (bind(soc, (struct sockaddr *)&addr, sizeof(addr)) < 0){
         return (-1);
     }
 
@@ -68,14 +41,12 @@ int CAN::open_port(const char *port)
 int CAN::send_port(struct can_frame *frame)
 {
     int retval;
-   retval = write(soc, frame, sizeof(struct can_frame));
-    if (retval != sizeof(struct can_frame))
-    {
-        return (-1);
+    retval = write(soc, frame, sizeof(struct can_frame));
+    if (retval != sizeof(struct can_frame)){
+      return (-1);
     }
-    else
-    {
-        return (0);
+    else{
+      return (0);
     }
 }
 
@@ -87,30 +58,25 @@ void CAN::read_port()
     int recvbytes = 0;
 
     read_can_port = 1;
-    while(read_can_port)
-    {
-        struct timeval timeout = {1, 0};  //s, us
-        fd_set readSet;
-        FD_ZERO(&readSet);
-        FD_SET(soc, &readSet);
+    while(read_can_port){
 
-        if (select((soc + 1), &readSet, NULL, NULL, &timeout) >= 0)
-        {
-            if (!read_can_port)
-            {
-                break;
-            }
-            if (FD_ISSET(soc, &readSet))
-            {
-                recvbytes = read(soc, &frame_rd, sizeof(struct can_frame));
-                if(recvbytes)
-                {
-                    printf("dlc = %d, data = %s\n", frame_rd.can_dlc,frame_rd.data);
+      struct timeval timeout = {1, 0};  //s, us
+      fd_set readSet;
+      FD_ZERO(&readSet);
+      FD_SET(soc, &readSet);
 
-                }
-            }
+      if (select((soc + 1), &readSet, NULL, NULL, &timeout) >= 0){
+
+        if (!read_can_port){
+          break;
         }
-
+        if (FD_ISSET(soc, &readSet)){
+          recvbytes = read(soc, &frame_rd, sizeof(struct can_frame));
+          if(recvbytes){
+             printf("dlc = %d, data = %s\n", frame_rd.can_dlc,frame_rd.data);
+          }
+        }
+      }
     }
 
 }
@@ -121,7 +87,7 @@ int CAN::close_port()
     return 0;
 }
 
-void CAN::CAN_initialize(int bit_rate_mode,string port_name){
+void CAN::CAN_initialize(int bit_rate_mode){
 /*
   * (can bit-rate)
   * -s0 : 10k(bps)
@@ -135,71 +101,74 @@ void CAN::CAN_initialize(int bit_rate_mode,string port_name){
   * -s8 : 1M
   */
 
+/*
+ * Note
+ * You have to replace '111111' to your linux Password.
+ */
 
-  string command_0 = "echo '111111' | sudo -S slcand -o -c -s0 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_1 = "echo '111111' | sudo -S slcand -o -c -s1 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";//"sudo slcand -o -c -s1 /dev/"+ port_name + " can1 && sudo ifconfig can1 up && sudo ifconfig can1 txqueuelen 1000";
-  string command_2 = "echo '111111' | sudo -S slcand -o -c -s2 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_3 = "echo '111111' | sudo -S slcand -o -c -s3 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_4 = "echo '111111' | sudo -S slcand -o -c -s4 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_5 = "echo '111111' | sudo -S slcand -o -c -s5 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_6 = "echo '111111' | sudo -S slcand -o -c -s6 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_7 = "echo '111111' | sudo -S slcand -o -c -s7 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
-  string command_8 = "echo '111111' | sudo -S slcand -o -c -s8 /dev/"+ port_name + " " + port_s + " && sudo ifconfig "+port_s+" up && sudo ifconfig "+port_s+" txqueuelen 1000";
+  string command_0 = "echo '111111' | sudo -S slcand -o -c -s0 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_1 = "echo '111111' | sudo -S slcand -o -c -s1 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";//"sudo slcand -o -c -s1 /dev/"+ port_name + " can1 && sudo ifconfig can1 up && sudo ifconfig can1 txqueuelen 1000";
+  string command_2 = "echo '111111' | sudo -S slcand -o -c -s2 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_3 = "echo '111111' | sudo -S slcand -o -c -s3 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_4 = "echo '111111' | sudo -S slcand -o -c -s4 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_5 = "echo '111111' | sudo -S slcand -o -c -s5 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_6 = "echo '111111' | sudo -S slcand -o -c -s6 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_7 = "echo '111111' | sudo -S slcand -o -c -s7 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+  string command_8 = "echo '111111' | sudo -S slcand -o -c -s8 /dev/"+ this->device_name + " " + this->port_name + " && sudo ifconfig "+this->port_name+" up && sudo ifconfig "+this->port_name+" txqueuelen 1000";
+
   string command = command_0; //초기화
   string bps_s = "10k"; //초기화
 
-switch (bit_rate_mode)
-{
-case 0:
-  command = command_0;
-  bps_s = "10k";
-  break;
-case 1:
-  command = command_1;
-  bps_s = "20k";
-  break;
-case 2:
-  command = command_2;
-  bps_s = "50k";
-  break;
-case 3:
+  switch (bit_rate_mode)
+  {
+  case 0:
+    command = command_0;
+    bps_s = "10k";
+    break;
+  case 1:
+    command = command_1;
+    bps_s = "20k";
+    break;
+  case 2:
+    command = command_2;
+    bps_s = "50k";
+    break;
+  case 3:
   command = command_3;
   bps_s = "100k";
   break;
-case 4:
-  command = command_4;
-  bps_s = "125k";
-  break;
-case 5:
-  command = command_5;
-  bps_s = "250k";
-  break;
-case 6:
-  command = command_6;
-  bps_s = "500k";
-  break;
-case 7:
-  command = command_7;
-  bps_s = "750k";
-  break;
-case 8:
-  command = command_8;
-  bps_s = "1M";
-  break;
+  case 4:
+    command = command_4;
+    bps_s = "125k";
+    break;
+  case 5:
+    command = command_5;
+    bps_s = "250k";
+    break;
+  case 6:
+    command = command_6;
+    bps_s = "500k";
+    break;
+  case 7:
+    command = command_7;
+    bps_s = "750k";
+    break;
+  case 8:
+    command = command_8;
+    bps_s = "1M";
+    break;
 
-default:
-  command = command_5;
-  bps_s = "10k";
-  break;
-}
-
+  default:
+    command = command_5;
+    bps_s = "10k";
+    break;
+  }
 
   const char *c = command.c_str();
   const char *c2 = bps_s.c_str();
 
-
-
   int i;
+  int count = 0;
 
   for(i=0;i<5;i++){
     if(system(c) == 0){       //터미널에 명령 전달
@@ -207,32 +176,44 @@ default:
       ROS_INFO("%s",c);
       break;
     }
-    else
-      ROS_WARN("CAN init Setting Failed");
-
+    else{
+      count ++;
+    }
+  }
+  if(count>4){
+    ROS_ERROR("CAN init Setting Failed!!!");
   }
 
-  const char *port_sss = port_s.c_str();
+
+  const char *port_name_s = this->port_name.c_str();
 
   for(i=0;i<5;i++){
-    if(open_port(port_sss)==-1)            //port_s : can0, can1 etc...
-      ROS_WARN("CAN_initalize_Failed");
 
+    if( open_port(port_name_s) == -1 ){            //port_s : can0, can1 etc...
+      ROS_WARN("CAN_initalize_Failed");
+    }
     else{
       ROS_INFO("initailze_CAN");
       break;
     }
   }
+
 }
 
 
+void CAN::set_can_frame(struct can_frame &canframe, u_int32_t CAN_id, u_int8_t CAN_data_len, bool is_ext_mode){
 
-void CAN::CAN_write(BYTE data_array[]){
+  canframe.can_id = CAN_id;
+  canframe.can_dlc = CAN_data_len;
 
-  //struct can_frame frame;
-  //frame.can_id = 0xB7AC01 ;        //32bit
-  //frame.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
-  //frame.can_dlc=8;                 //8bit
+  if(is_ext_mode){
+    canframe.can_id |= CAN_EFF_FLAG;    //extended CAN mode FLAG
+  }
+}
+
+
+void CAN::CAN_write(struct can_frame &frame, BYTE data_array[]){
+
   memcpy(frame.data,data_array,8); //copy (data_array)->(frame)
 
   if(send_port(&frame) == -1){
@@ -241,23 +222,15 @@ void CAN::CAN_write(BYTE data_array[]){
 }
 
 
-struct CAN_data CAN::CAN_read(void){
+struct can_frame CAN::CAN_read(void){
 
   struct can_frame frame_rd;
-  struct CAN_data can_data;
   int result = read(soc, &frame_rd, sizeof(struct can_frame));
   if(result<1){
       ROS_WARN("CAN_read_failed");
-      //return;
   }
 
-  //can_data.pid=frame_rd.data[0];
-  int i;
-  for(i=0;i<8;i++){
-    can_data.data[i]=frame_rd.data[i];
-  }
-  return can_data;
-
+  return frame_rd;
 }
 
 

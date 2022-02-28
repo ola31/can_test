@@ -3,6 +3,6 @@
 
 #include "can_test/can.h"
 
-CAN can;
+//CAN can("can0","CAN0");
 
 #endif // CAN_TEST_NODE_H
