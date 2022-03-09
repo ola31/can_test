@@ -224,6 +224,40 @@ void CAN::CAN_initialize(int bit_rate_mode){
 
 }
 
+void CAN::add_CAN_Filter(unsigned int can_id_, bool is_ext_id){
+
+  if(this->is_filter_has_id == false){
+    if((this->filter_list = (struct can_filter*)malloc(sizeof(struct can_filter)*1)) == nullptr){
+      ROS_ERROR("malloc_error");
+    }
+    filter_list[0].can_id = can_id_;
+    if(is_ext_id){
+      filter_list[0].can_mask = CAN_EFF_MASK;  //extended_CANI(CAN 2.0b) id
+    }
+    else{
+      filter_list[0].can_mask = CAN_SFF_MASK;  //standard_CAN(CAN 2.0a) id
+    }
+    this->is_filter_has_id = true;
+  }
+  else{
+    int size_num = sizeof(filter_list) / sizeof(struct can_filter) ;
+    realloc(filter_list,(size_num+1)*sizeof(struct can_filter));
+    filter_list[size_num].can_id = can_id_;
+    if(is_ext_id){
+      filter_list[0].can_mask = CAN_EFF_MASK;  //extended_CANI(CAN 2.0b) id
+    }
+    else{
+      filter_list[0].can_mask = CAN_SFF_MASK;  //standard_CAN(CAN 2.0a) id
+    }
+  }
+}
+
+//can't use "add_CAN_Filter()" after "set_CAN_Filter()" run
+void CAN::set_CAN_Filter(void){
+  setsockopt(this->soc, SOL_CAN_RAW, CAN_RAW_FILTER, &filter_list, sizeof(filter_list));
+  free(filter_list);
+}
+
 
 /* can_frame 구조체 변수의 id, 데이터 길이를 설정해주는 함수.
  * *can_frame   : id와 데이터 길이를 설정할 can_frame 구조체 변수의 포인터

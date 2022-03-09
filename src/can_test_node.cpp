@@ -37,6 +37,12 @@ int main(int argc, char **argv)
   BYTE can_array1[8]={'H','e','l','l','o','I','D','1'};
   BYTE can_array2[8]={'H','e','l','l','o','I','D','2'};
 
+  //CAN filter adding
+  can.add_CAN_Filter(0x100,false);
+  can.add_CAN_Filter(0xB7AC01,true);
+  //CAN filter apply
+  can.set_CAN_Filter();
+
   while (ros::ok())
   {
     recv_frame = can.CAN_read();

@@ -30,6 +30,11 @@ typedef unsigned int BYTE4;   //32bit
  */
 /// https://sites.uclouvain.be/SystInfo/usr/include/linux/can.h.html
 
+/**
+ *struct can_filter
+ * @can_id
+ * @can_mask
+ */
 
 enum Bit_rate {
   _10k = 0,
@@ -52,6 +57,11 @@ class CAN
     string port_name;        //socket CAN port name. such as "can0"
     string device_name;  //Port of USB_to_CAN device port such as "ttyACM0". Can find it in "/dev" directory.
 
+  private:
+    bool is_filter_has_id = false;
+
+    struct can_filter *filter_list;
+
   public:
     CAN(string port_name_, string device_name_);
     ~CAN();
@@ -63,6 +73,8 @@ class CAN
 
     void CAN_initialize(int bit_rate_mode);
     void set_can_frame(struct can_frame &canframe, u_int32_t CAN_id, u_int8_t CAN_data_len, bool is_ext_mode);
+    void add_CAN_Filter(unsigned int can_id_, bool is_ext_id);
+    void set_CAN_Filter(void);
     void CAN_write(struct can_frame &frame, BYTE data_array[]);
     struct can_frame CAN_read(void);
 
