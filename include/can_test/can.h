@@ -48,12 +48,23 @@ enum Bit_rate {
   _1M
 };
 
+enum is_Extend_CAN{
+  _EXT_CAN  = true,
+  _STD_CAN  = false
+};
+
+enum is_Virtual_CAN{
+  _Virtual = true,
+  _Hardwere = false
+};
+
 class CAN
 {
 
   private:
     int soc;
     int read_can_port;
+    bool is_virtual_CAN = false;
     string port_name;        //socket CAN port name. such as "can0"
     string device_name;  //Port of USB_to_CAN device port such as "ttyACM0". Can find it in "/dev" directory.
 
@@ -64,6 +75,7 @@ class CAN
 
   public:
     CAN(string port_name_, string device_name_);
+    CAN(string port_name_, bool is_virtual_CAN_);
     ~CAN();
 
     int open_port(const char *port);
@@ -77,6 +89,7 @@ class CAN
     void set_CAN_Filter(void);
     void CAN_write(struct can_frame &frame, BYTE data_array[]);
     struct can_frame CAN_read(void);
+    bool CAN_read(struct can_frame &recv_frame);
 
 
 };
